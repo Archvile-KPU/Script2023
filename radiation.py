@@ -19,19 +19,19 @@ radiation_label.pack()
 power_plant = tk.StringVar()
 power_plant.set("WS")  # Set default selection to WS
 
-radio_button_ws = tk.Radiobutton(window, text="WS", variable=power_plant, value="WS")
+radio_button_ws = tk.Radiobutton(window, text="월성", variable=power_plant, value="WS")
 radio_button_ws.pack()
 
-radio_button_kr = tk.Radiobutton(window, text="KR", variable=power_plant, value="KR")
+radio_button_kr = tk.Radiobutton(window, text="고리", variable=power_plant, value="KR")
 radio_button_kr.pack()
 
-radio_button_yk = tk.Radiobutton(window, text="YK", variable=power_plant, value="YK")
+radio_button_yk = tk.Radiobutton(window, text="한빛", variable=power_plant, value="YK")
 radio_button_yk.pack()
 
-radio_button_uj = tk.Radiobutton(window, text="UJ", variable=power_plant, value="UJ")
+radio_button_uj = tk.Radiobutton(window, text="한울", variable=power_plant, value="UJ")
 radio_button_uj.pack()
 
-radio_button_su = tk.Radiobutton(window, text="SU", variable=power_plant, value="SU")
+radio_button_su = tk.Radiobutton(window, text="새울", variable=power_plant, value="SU")
 radio_button_su.pack()
 
 fetch_button = tk.Button(window, text="Fetch Radiation Level", command=get_radiation_level)
