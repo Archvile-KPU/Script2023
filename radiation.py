@@ -11,9 +11,54 @@ import threading
 from tkinter import ttk
 import openai
 import telepot
+import sys
+from tkinter import messagebox
+from cefpython3 import cefpython as cef
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_KEY"
+
+def showMap(frame):
+    global browser
+    sys.excepthook = cef.ExceptHook
+    window_info = cef.WindowInfo(frame.winfo_id())
+    window_info.SetAsChild(frame.winfo_id(), [0,0,800,600])
+    cef.Initialize()
+    browser = cef.CreateBrowserSync(window_info, url='file:///map.html')
+    cef.MessageLoop()
+
+
+def setup():
+    # 지도 저장
+    # 위도 경도 지정
+    m = folium.Map(location=[37.3402849, 126.7313189], zoom_start=13)
+    # 마커 지정
+    folium.Marker([37.3402849, 126.7313189], popup='한국산업기술대').add_to(m)
+    # html 파일로 저장
+    m.save('map.html')
+
+    # 브라우저를 위한 쓰레드 생성
+    thread = threading.Thread(target=showMap, args=(frame2,))
+    thread.daemon = True
+    thread.start()
+
+def pressed_1():
+    m = folium.Map(location=[37.3402849, 126.7313189], zoom_start=13)
+    folium.Marker([37.3402849, 126.7313189], popup='한국산업기술대').add_to(m)
+    m.save('map.html')
+    browser.Reload()
+
+def pressed_2():
+    m = folium.Map(location=[37.4145018,126.6959112], zoom_start=13)
+    folium.Marker([37.4145018,126.6959112], popup='서울대').add_to(m)
+    m.save('map.html')
+    browser.Reload()
+
+def pressed_3():
+    m = folium.Map(location=[37.5657882,126.936378], zoom_start=13)
+    folium.Marker([37.5657882,126.936378], popup='연세대').add_to(m)
+    m.save('map.html')
+    browser.Reload()
 
 def get_radiation_level():
     selected_plant = power_plant.get()  # Get the selected power plant
@@ -63,10 +108,8 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    
-    # Telegram Bot
-    bot = telepot.Bot('botcode')
-    bot.sendMessage('code', bot_response)
+    bot = telepot.Bot('5875225809:AAF2gMF-bz1TzIQhQ7tqMu6su6H4FFjLzHQ')
+    bot.sendMessage('6177831500', bot_response)
 
 
 window = tk.Tk()
@@ -147,6 +190,17 @@ for i in range(5):
     index+=1
     canvas.create_rectangle(10+i*barwidth,height-(height-100)*histogram[i]/maxcount,10+(i+1)*barwidth,height-100,tags='histogram', fill="green")
     canvas.create_text(10+i*barwidth+(barwidth/2),height-(height-50)*histogram[i]/maxcount,text=str(histogram[i]),tags='histogram')
+
+# Maps tab
+
+frame1 = tk.Frame(tab_maps)
+frame1.pack(side=tk.LEFT)
+tk.Button(frame1, text='한국산업기술대', command=pressed_1).pack()
+tk.Button(frame1, text='서울대', command=pressed_2).pack()
+tk.Button(frame1, text='연세대', command=pressed_3).pack()
+frame2 = tk.Frame(tab_maps, width=800, height=600)
+frame2.pack(side=tk.LEFT)
+setup()
 
 #chatGPT module
 
