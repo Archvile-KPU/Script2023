@@ -63,8 +63,10 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    bot = telepot.Bot('5875225809:AAF2gMF-bz1TzIQhQ7tqMu6su6H4FFjLzHQ')
-    bot.sendMessage('6177831500', bot_response)
+    
+    # Telegram Bot
+    bot = telepot.Bot('botcode')
+    bot.sendMessage('code', bot_response)
 
 
 window = tk.Tk()
