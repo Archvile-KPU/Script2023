@@ -18,21 +18,31 @@ import xml.etree.ElementTree as ET
 from PIL import Image, ImageTk
 import tkinter.font
 
-image = Image.open("sign.png")
+
 
 width = 300
 height = 300
-image = image.resize((width, height))
 
+image = Image.open("sign.png")
 emergency = Image.open("emergency.png")
 warning = Image.open("warning.png")
 attention = Image.open("attention.png")
 safe = Image.open("safe.png")
 
+image = image.resize((width, height))
+emergency = emergency.resize((width, height))
+warning = warning.resize((width, height))
+attention = attention.resize((width, height))
+safe = safe.resize((width, height))
+
+global testnum
+testnum = 0
+
 # Set your OpenAI API key
 openai.api_key = "YOUR_KEY"
 API_KEY = 'key'
-
+CHAT_ID = 'id'
+BOT_ID = 'id'
 def showMap(frame):
     global browser
     sys.excepthook = cef.ExceptHook
@@ -120,17 +130,108 @@ def get_radiation_level():
         powersite_label.config(text="Power Site expl: N/A")
     
     # emergency
-    if value > 0.973:
-        pass
+    if eval(value) > 0.973:
+        print('emergency')
+        image_e = ImageTk.PhotoImage(emergency)
+        image_label.configure(image=image_e)
+        image_label.image = image_e
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "EMERGENCY. EVACUATE IMMEDIATELY")
+        
     # warning
-    elif value > 0.973:
-        pass
+    elif eval(value) > 0.973:
+        print('warning')
+        image_w = ImageTk.PhotoImage(warning)
+        image_label.configure(image=image_w)
+        image_label.image = image_w
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "Warning. Current level is dangerous.")
+        
     # attention
-    elif value > 0.12:
-        pass
+    elif eval(value) > 0.12:
+        print('attention')
+        image_a = ImageTk.PhotoImage(attention)
+        image_label.configure(image=image_a)
+        image_label.image = image_a
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "Current level needs attention.")
+        
     # safe
     else:
-        pass
+        print('safe')
+        image_s = ImageTk.PhotoImage(safe)
+        image_label.configure(image=image_s)
+        image_label.image = image_s
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "Current level is safe.")
+
+def testdrive(value):
+    
+    # emergency
+    if value > 2:
+        print('emergency')
+        image_e = ImageTk.PhotoImage(emergency)
+        image_label.configure(image=image_e)
+        image_label.image = image_e
+        
+        radiation_label.config(text="Radiation Level: 999.999usv/h")
+        plant_label.config(text="Power Site: N/A")
+        powersite_label.config(text="Power Site expl: N/A")
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "EMERGENCY. EVACUATE IMMEDIATELY")
+        
+    # warning
+    elif value > 1:
+        print('warning')
+        image_w = ImageTk.PhotoImage(warning)
+        image_label.configure(image=image_w)
+        image_label.image = image_w
+        
+        radiation_label.config(text="Radiation Level: 0.973usv/h")
+        plant_label.config(text="Power Site: N/A")
+        powersite_label.config(text="Power Site expl: N/A")
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "Warning. Current level is dangerous.")
+        
+    # attention
+    elif value > 0:
+        print('attention')
+        image_a = ImageTk.PhotoImage(attention)
+        image_label.configure(image=image_a)
+        image_label.image = image_a
+        
+        radiation_label.config(text="Radiation Level: 0.121usv/h")
+        plant_label.config(text="Power Site: N/A")
+        powersite_label.config(text="Power Site expl: N/A")
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "Current level needs attention.")
+        
+    # safe
+    else:
+        print('safe')
+        image_s = ImageTk.PhotoImage(safe)
+        image_label.configure(image=image_s)
+        image_label.image = image_s
+        
+        radiation_label.config(text="Radiation Level: 0.000usv/h")
+        plant_label.config(text="Power Site: N/A")
+        powersite_label.config(text="Power Site expl: N/A")
+        
+        bot = telepot.Bot(BOT_ID)
+        bot.sendMessage(CHAT_ID, "Current level is safe.")
+
+def testpilot():
+    global testnum
+    testdrive(testnum)
+    testnum += 1
+    
 
 def return_radiation_level(powersite):
     params = {'serviceKey': API_KEY, 'genName': powersite}
@@ -193,8 +294,8 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    bot = telepot.Bot('code')
-    bot.sendMessage('code', bot_response)
+    bot = telepot.Bot('5875225809:AAF2gMF-bz1TzIQhQ7tqMu6su6H4FFjLzHQ')
+    bot.sendMessage('6177831500', bot_response)
 
 
 window = tk.Tk()
@@ -260,6 +361,10 @@ radio_button_su.pack(anchor="w")
 
 fetch_button = tk.Button(tab_radiobuttons, text="Fetch Radiation Level", command=get_radiation_level, font=font2)
 fetch_button.pack(anchor="w")
+
+
+test_button = tk.Button(tab_radiobuttons, text="Drill", command=testpilot, font=font2)
+test_button.pack(anchor="s")
 
 image_tk = ImageTk.PhotoImage(image)
 image_label = tk.Label(tab_radiobuttons, image=image_tk)
