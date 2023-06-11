@@ -63,8 +63,8 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    bot = telepot.Bot('bot code')
-    bot.sendMessage('code', bot_response)
+    bot = telepot.Bot('5875225809:AAF2gMF-bz1TzIQhQ7tqMu6su6H4FFjLzHQ')
+    bot.sendMessage('6177831500', bot_response)
 
 
 window = tk.Tk()
@@ -78,13 +78,13 @@ notebook = ttk.Notebook(window, width=800, height=600)
 
 # Create tabs
 tab_radiobuttons = ttk.Frame(notebook)
-tab_blank = ttk.Frame(notebook)
+tab_graph = ttk.Frame(notebook)
 tab_maps = ttk.Frame(notebook)
 tab_safety = ttk.Frame(notebook)
 tab_telegram = ttk.Frame(notebook)
 
 notebook.add(tab_radiobuttons, text="Radiation Level")
-notebook.add(tab_blank, text="Graph")
+notebook.add(tab_graph, text="Graph")
 notebook.add(tab_maps, text="Maps")
 notebook.add(tab_safety, text="Safety")
 notebook.add(tab_telegram, text="Others")
@@ -121,30 +121,30 @@ fetch_button = tk.Button(tab_radiobuttons, text="Fetch Radiation Level", command
 fetch_button.pack()
 
 
-# Content for the Blank tab (tab_blank)
-blank_label = tk.Label(tab_blank, text="This is a blank page.")
-blank_label.pack()
-height=400
-width=600
+# Content for the Graph tab (tab_graph)
+graph_label = tk.Label(tab_graph, text="Graph for all plants")
+graph_label.pack()
+height=600
+width=800
 
 fclist = ['월성','고리','한빛','한울','새울']
 radlist = [0.093,0.110,0.099,0.109,0.094]
 
-canvas = tk.Canvas(blank_label,width=width,height=height)
+canvas = tk.Canvas(graph_label,width=width,height=height)
 canvas.pack()
 
 histogram = [0 for _ in range(5)]
 for i in range(5):
     histogram[i] += radlist[i]
-canvas.create_line(10,height-10,width-10,height-10,tags='histogram')
+canvas.create_line(10,height-100,width-10,height-100,tags='histogram')
 barwidth = (width-20)/5
 maxcount = max(histogram)
 index=0
 for i in range(5):
-    canvas.create_text(10+i*barwidth+(barwidth/2),height-5,text=fclist[index],tags='histogram')
+    canvas.create_text(10+i*barwidth+(barwidth/2),height-20,text=fclist[index],tags='histogram')
     index+=1
-    canvas.create_rectangle(10+i*barwidth,height-(height-10)*histogram[i]/maxcount,10+(i+1)*barwidth,height-10,tags='histogram')
-    canvas.create_text(10+i*barwidth+(barwidth/2),height-(height)*histogram[i]/maxcount,text=str(histogram[i]),tags='histogram')
+    canvas.create_rectangle(10+i*barwidth,height-(height-100)*histogram[i]/maxcount,10+(i+1)*barwidth,height-100,tags='histogram', fill="green")
+    canvas.create_text(10+i*barwidth+(barwidth/2),height-(height-50)*histogram[i]/maxcount,text=str(histogram[i]),tags='histogram')
 
 #chatGPT module
 
@@ -153,7 +153,7 @@ chatbox.config(state=tk.DISABLED)
 chatbox.place(x=6, y=6, height=385, width=480)
 
 # Create user input box
-input_box = tk.Text(tab_safety, bd=0, bg="black", height="4", width="30")
+input_box = tk.Text(tab_safety, bd=0, bg="white", height="4", width="30")
 input_box.place(x=128, y=400, height=88, width=348)
 
 # Create send button
