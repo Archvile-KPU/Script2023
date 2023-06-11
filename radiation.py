@@ -15,6 +15,19 @@ import sys
 from tkinter import messagebox
 from cefpython3 import cefpython as cef
 import xml.etree.ElementTree as ET
+from PIL import Image, ImageTk
+import tkinter.font
+
+image = Image.open("sign.png")
+
+width = 300
+height = 300
+image = image.resize((width, height))
+
+emergency = Image.open("emergency.png")
+warning = Image.open("warning.png")
+attention = Image.open("attention.png")
+safe = Image.open("safe.png")
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_KEY"
@@ -105,6 +118,19 @@ def get_radiation_level():
         radiation_label.config(text="Radiation Level: N/A")
         plant_label.config(text="Power Site: N/A")
         powersite_label.config(text="Power Site expl: N/A")
+    
+    # emergency
+    if value > 0.973:
+        pass
+    # warning
+    elif value > 0.973:
+        pass
+    # attention
+    elif value > 0.12:
+        pass
+    # safe
+    else:
+        pass
 
 def return_radiation_level(powersite):
     params = {'serviceKey': API_KEY, 'genName': powersite}
@@ -167,8 +193,8 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    bot = telepot.Bot('key')
-    bot.sendMessage('key', bot_response)
+    bot = telepot.Bot('code')
+    bot.sendMessage('code', bot_response)
 
 
 window = tk.Tk()
@@ -196,40 +222,48 @@ notebook.add(tab_telegram, text="Others")
 notebook.pack()
 
 # Content for the Radiobuttons tab (tab_radiobuttons)
-radiobutton_label = tk.Label(tab_radiobuttons, text="Select a power plant:")
-radiobutton_label.pack()
 
-plant_label = tk.Label(tab_radiobuttons, text="Power Site:")
-plant_label.pack()
+font=tk.font.Font(family="times new roman", size=20)
+font2=tk.font.Font(size=15)
 
-powersite_label = tk.Label(tab_radiobuttons, text="Power Site expl:")
-powersite_label.pack()
 
-radiation_label = tk.Label(tab_radiobuttons, text="Radiation Level:")
-radiation_label.pack()
+radiobutton_label = tk.Label(tab_radiobuttons, text="Select a power plant:", font=font)
+radiobutton_label.pack(anchor="w")
 
+plant_label = tk.Label(tab_radiobuttons, text="Power Site:", font=font)
+plant_label.pack(anchor="w")
+
+powersite_label = tk.Label(tab_radiobuttons, text="Power Site expl:", font=font)
+powersite_label.pack(anchor="w")
+
+radiation_label = tk.Label(tab_radiobuttons, text="Radiation Level:", font=font)
+radiation_label.pack(anchor="w")
 
 # Create radio buttons for power plants
 power_plant = tk.StringVar()
 power_plant.set("WS")  # Set default selection to WS
 
-radio_button_ws = tk.Radiobutton(tab_radiobuttons, text="월성", variable=power_plant, value="WS")
-radio_button_ws.pack()
+radio_button_ws = tk.Radiobutton(tab_radiobuttons, text="월성", variable=power_plant, value="WS", font=font2)
+radio_button_ws.pack(anchor="w")
 
-radio_button_kr = tk.Radiobutton(tab_radiobuttons, text="고리", variable=power_plant, value="KR")
-radio_button_kr.pack()
+radio_button_kr = tk.Radiobutton(tab_radiobuttons, text="고리", variable=power_plant, value="KR", font=font2)
+radio_button_kr.pack(anchor="w")
 
-radio_button_yk = tk.Radiobutton(tab_radiobuttons, text="한빛", variable=power_plant, value="YK")
-radio_button_yk.pack()
+radio_button_yk = tk.Radiobutton(tab_radiobuttons, text="한빛", variable=power_plant, value="YK", font=font2)
+radio_button_yk.pack(anchor="w")
 
-radio_button_uj = tk.Radiobutton(tab_radiobuttons, text="한울", variable=power_plant, value="UJ")
-radio_button_uj.pack()
+radio_button_uj = tk.Radiobutton(tab_radiobuttons, text="한울", variable=power_plant, value="UJ", font=font2)
+radio_button_uj.pack(anchor="w")
 
-radio_button_su = tk.Radiobutton(tab_radiobuttons, text="새울", variable=power_plant, value="SU")
-radio_button_su.pack()
+radio_button_su = tk.Radiobutton(tab_radiobuttons, text="새울", variable=power_plant, value="SU", font=font2)
+radio_button_su.pack(anchor="w")
 
-fetch_button = tk.Button(tab_radiobuttons, text="Fetch Radiation Level", command=get_radiation_level)
-fetch_button.pack()
+fetch_button = tk.Button(tab_radiobuttons, text="Fetch Radiation Level", command=get_radiation_level, font=font2)
+fetch_button.pack(anchor="w")
+
+image_tk = ImageTk.PhotoImage(image)
+image_label = tk.Label(tab_radiobuttons, image=image_tk)
+image_label.place(x=500,y=0)
 
 
 # Content for the Graph tab (tab_graph)
@@ -254,20 +288,20 @@ barwidth = (width-20)/5
 maxcount = max(histogram)
 index=0
 for i in range(5):
-    canvas.create_text(10+i*barwidth+(barwidth/2),height-20,text=fclist[index],tags='histogram')
+    canvas.create_text(10+i*barwidth+(barwidth/2),height-20,text=fclist[index],tags='histogram', font=font2)
     index+=1
     canvas.create_rectangle(10+i*barwidth,height-(height-100)*histogram[i]/maxcount,10+(i+1)*barwidth,height-100,tags='histogram', fill="green")
-    canvas.create_text(10+i*barwidth+(barwidth/2),height-(height-50)*histogram[i]/maxcount,text=str(histogram[i]),tags='histogram')
+    canvas.create_text(10+i*barwidth+(barwidth/2),height-(height-50)*histogram[i]/maxcount,text=str(histogram[i]),tags='histogram', font=font2)
 
 # Maps tab
 
 frame1 = tk.Frame(tab_maps)
 frame1.pack(side=tk.LEFT)
-tk.Button(frame1, text='월성', command=pressed_1).pack()
-tk.Button(frame1, text='고리', command=pressed_2).pack()
-tk.Button(frame1, text='한빛', command=pressed_3).pack()
-tk.Button(frame1, text='한울', command=pressed_4).pack()
-tk.Button(frame1, text='새울', command=pressed_5).pack()
+tk.Button(frame1, text='월성', command=pressed_1, font=font2).pack()
+tk.Button(frame1, text='고리', command=pressed_2, font=font2).pack()
+tk.Button(frame1, text='한빛', command=pressed_3, font=font2).pack()
+tk.Button(frame1, text='한울', command=pressed_4, font=font2).pack()
+tk.Button(frame1, text='새울', command=pressed_5, font=font2).pack()
 frame2 = tk.Frame(tab_maps, width=800, height=600)
 frame2.pack(side=tk.LEFT)
 setup()
@@ -283,7 +317,7 @@ input_box = tk.Text(tab_safety, bd=0, bg="white", height="4", width="30")
 input_box.place(x=128, y=400, height=88, width=348)
 
 # Create send button
-send_button = tk.Button(tab_safety, text="Send", command=send_message, height=5, width=12)
+send_button = tk.Button(tab_safety, text="Send", command=send_message, height=5, width=12, font=font2)
 send_button.place(x=6, y=400, height=88, width=120)
 
 window.mainloop()
