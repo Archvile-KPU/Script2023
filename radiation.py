@@ -18,6 +18,7 @@ import xml.etree.ElementTree as ET
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_KEY"
+API_KEY = 'key'
 
 def showMap(frame):
     global browser
@@ -75,22 +76,57 @@ def pressed_5():
     
 def get_radiation_level():
     selected_plant = power_plant.get()  # Get the selected power plant
-    params = {'serviceKey': 'key', 'genName': selected_plant}
+    params = {'serviceKey': API_KEY, 'genName': selected_plant}
     url = 'http://data.khnp.co.kr/environ/service/realtime/radiorate'
     response = requests.get(url, params=params)
     
     #print(response.text)
     root = ET.fromstring(response.text)
     
+    data_list = []  # List to store data points
+
     for item in root.iter("item"):
         expl = item.findtext("expl")
         name = item.findtext("name")
         value = item.findtext("value")
+        data_list.append((name, expl, value))  # Append data points to the list
 
+    # Display the fetched data
     radiobutton_label.config(text="Select a power plant: {}".format(selected_plant))
-    radiation_label.config(text="Radiation Level: {}usv/h".format(value))
-    plant_label.config(text="Power Site: {}".format(name))
-    powersite_label.config(text="Power Site expl: {}".format(expl))
+
+    if len(data_list) > 0:
+        # Retrieve the first data point from the list
+        name, expl, value = data_list[0]
+        radiation_label.config(text="Radiation Level: {}usv/h".format(value))
+        plant_label.config(text="Power Site: {}".format(name))
+        powersite_label.config(text="Power Site expl: {}".format(expl))
+    else:
+        # No data points found
+        radiation_label.config(text="Radiation Level: N/A")
+        plant_label.config(text="Power Site: N/A")
+        powersite_label.config(text="Power Site expl: N/A")
+
+def return_radiation_level(powersite):
+    params = {'serviceKey': API_KEY, 'genName': powersite}
+    url = 'http://data.khnp.co.kr/environ/service/realtime/radiorate'
+    response = requests.get(url, params=params)
+
+    #print(response.text)
+    root = ET.fromstring(response.text)
+    
+    data_list = []  # List to store data points
+
+    for item in root.iter("item"):
+        expl = item.findtext("expl")
+        name = item.findtext("name")
+        value = item.findtext("value")
+        data_list.append((name, expl, value))  # Append data points to the list
+
+    if len(data_list) > 0:
+        # Retrieve the first data point from the list
+        name, expl, value = data_list[0]
+    
+    return value
 
 def send_message():
     user_input = input_box.get("1.0", tk.END).strip()
@@ -131,8 +167,8 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    bot = telepot.Bot('botcode')
-    bot.sendMessage('code', bot_response)
+    bot = telepot.Bot('key')
+    bot.sendMessage('key', bot_response)
 
 
 window = tk.Tk()
@@ -202,8 +238,10 @@ graph_label.pack()
 height=600
 width=800
 
+return_radiation_level("WS")
+
 fclist = ['월성','고리','한빛','한울','새울']
-radlist = [0.093,0.110,0.099,0.109,0.094]
+radlist = [eval(return_radiation_level("WS")),eval(return_radiation_level("KR")),eval(return_radiation_level("YK")),eval(return_radiation_level("UJ")),eval(return_radiation_level("SU"))]
 
 canvas = tk.Canvas(graph_label,width=width,height=height)
 canvas.pack()
