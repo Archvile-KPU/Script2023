@@ -14,6 +14,7 @@ import telepot
 import sys
 from tkinter import messagebox
 from cefpython3 import cefpython as cef
+import xml.etree.ElementTree as ET
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_KEY"
@@ -74,12 +75,22 @@ def pressed_5():
     
 def get_radiation_level():
     selected_plant = power_plant.get()  # Get the selected power plant
-    params = {'serviceKey': 'YOUR_KEY', 'genName': selected_plant}
+    params = {'serviceKey': 'key', 'genName': selected_plant}
     url = 'http://data.khnp.co.kr/environ/service/realtime/radiorate'
     response = requests.get(url, params=params)
-    radiation_data = response.content
-    #radiation_data = 0.007
-    radiation_label.config(text="Radiation Level: {}usv/h".format(radiation_data))
+    
+    #print(response.text)
+    root = ET.fromstring(response.text)
+    
+    for item in root.iter("item"):
+        expl = item.findtext("expl")
+        name = item.findtext("name")
+        value = item.findtext("value")
+
+    radiobutton_label.config(text="Select a power plant: {}".format(selected_plant))
+    radiation_label.config(text="Radiation Level: {}usv/h".format(value))
+    plant_label.config(text="Power Site: {}".format(name))
+    powersite_label.config(text="Power Site expl: {}".format(expl))
 
 def send_message():
     user_input = input_box.get("1.0", tk.END).strip()
@@ -120,8 +131,8 @@ def generate_response(user_input):
     chatbox.insert(tk.END, "ChatGPT: " + bot_response + "\n\n")
     chatbox.config(state=tk.DISABLED)
     chatbox.see(tk.END)
-    bot = telepot.Bot('5875225809:AAF2gMF-bz1TzIQhQ7tqMu6su6H4FFjLzHQ')
-    bot.sendMessage('6177831500', bot_response)
+    bot = telepot.Bot('botcode')
+    bot.sendMessage('code', bot_response)
 
 
 window = tk.Tk()
@@ -152,8 +163,15 @@ notebook.pack()
 radiobutton_label = tk.Label(tab_radiobuttons, text="Select a power plant:")
 radiobutton_label.pack()
 
+plant_label = tk.Label(tab_radiobuttons, text="Power Site:")
+plant_label.pack()
+
+powersite_label = tk.Label(tab_radiobuttons, text="Power Site expl:")
+powersite_label.pack()
+
 radiation_label = tk.Label(tab_radiobuttons, text="Radiation Level:")
 radiation_label.pack()
+
 
 # Create radio buttons for power plants
 power_plant = tk.StringVar()
