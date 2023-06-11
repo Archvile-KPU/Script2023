@@ -31,9 +31,9 @@ def showMap(frame):
 def setup():
     # 지도 저장
     # 위도 경도 지정
-    m = folium.Map(location=[37.3402849, 126.7313189], zoom_start=13)
+    m = folium.Map(location=[35.71385822435067, 129.47484965310252], zoom_start=13)
     # 마커 지정
-    folium.Marker([37.3402849, 126.7313189], popup='한국산업기술대').add_to(m)
+    folium.Marker([35.71385822435067, 129.47484965310252], popup='월성').add_to(m)
     # html 파일로 저장
     m.save('map.html')
 
@@ -43,23 +43,35 @@ def setup():
     thread.start()
 
 def pressed_1():
-    m = folium.Map(location=[37.3402849, 126.7313189], zoom_start=13)
-    folium.Marker([37.3402849, 126.7313189], popup='한국산업기술대').add_to(m)
+    m = folium.Map(location=[35.71385822435067, 129.47484965310252 ], zoom_start=13)
+    folium.Marker([35.71385822435067, 129.47484965310252], popup='월성').add_to(m)
     m.save('map.html')
     browser.Reload()
 
 def pressed_2():
-    m = folium.Map(location=[37.4145018,126.6959112], zoom_start=13)
-    folium.Marker([37.4145018,126.6959112], popup='서울대').add_to(m)
+    m = folium.Map(location=[35.321954256925586,129.29451805278634], zoom_start=13)
+    folium.Marker([35.321954256925586,129.29451805278634], popup='고리').add_to(m)
     m.save('map.html')
     browser.Reload()
 
 def pressed_3():
-    m = folium.Map(location=[37.5657882,126.936378], zoom_start=13)
-    folium.Marker([37.5657882,126.936378], popup='연세대').add_to(m)
+    m = folium.Map(location=[35.40912239274478,126.41475741340308], zoom_start=13)
+    folium.Marker([35.40912239274478,126.41475741340308], popup='한빛').add_to(m)
     m.save('map.html')
     browser.Reload()
 
+def pressed_4():
+    m = folium.Map(location=[37.08605674376176,129.388632445903], zoom_start=13)
+    folium.Marker([37.08605674376176,129.388632445903], popup='한울').add_to(m)
+    m.save('map.html')
+    browser.Reload()
+
+def pressed_5():
+    m = folium.Map(location=[35.33796053363176,129.31350573077788], zoom_start=13)
+    folium.Marker([35.33796053363176,129.31350573077788], popup='새울').add_to(m)
+    m.save('map.html')
+    browser.Reload()
+    
 def get_radiation_level():
     selected_plant = power_plant.get()  # Get the selected power plant
     params = {'serviceKey': 'YOUR_KEY', 'genName': selected_plant}
@@ -195,9 +207,11 @@ for i in range(5):
 
 frame1 = tk.Frame(tab_maps)
 frame1.pack(side=tk.LEFT)
-tk.Button(frame1, text='한국산업기술대', command=pressed_1).pack()
-tk.Button(frame1, text='서울대', command=pressed_2).pack()
-tk.Button(frame1, text='연세대', command=pressed_3).pack()
+tk.Button(frame1, text='월성', command=pressed_1).pack()
+tk.Button(frame1, text='고리', command=pressed_2).pack()
+tk.Button(frame1, text='한빛', command=pressed_3).pack()
+tk.Button(frame1, text='한울', command=pressed_4).pack()
+tk.Button(frame1, text='새울', command=pressed_5).pack()
 frame2 = tk.Frame(tab_maps, width=800, height=600)
 frame2.pack(side=tk.LEFT)
 setup()
