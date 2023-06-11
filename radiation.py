@@ -230,48 +230,4 @@ input_box.place(x=128, y=400, height=88, width=348)
 send_button = tk.Button(tab_safety, text="Send", command=send_message, height=5, width=12)
 send_button.place(x=6, y=400, height=88, width=120)
 
-
-
-
-'''
-map_ws = folium.Map(location=[129.4757162, 35.713563], zoom_start=12)
-map_kr = folium.Map(location=[129.4757162, 35.713563], zoom_start=12)
-map_yk = folium.Map(location=[129.4757162, 35.713563], zoom_start=12)
-map_uj = folium.Map(location=[129.4757162, 35.713563], zoom_start=12)
-map_su = folium.Map(location=[129.4757162, 35.713563], zoom_start=12)
-
-frame_ws = ttk.Frame(tab_maps)
-frame_kr = ttk.Frame(tab_maps)
-frame_yk = ttk.Frame(tab_maps)
-frame_uj = ttk.Frame(tab_maps)
-frame_su = ttk.Frame(tab_maps)
-
-# Embed maps into frames
-map_ws_frame = folium.IFrame(width=400, height=400)
-map_ws_frame.add_child(map_ws)
-map_ws_frame.grid(row=0, column=0, padx=10, pady=10)
-
-map_kr_frame = folium.IFrame(width=400, height=400)
-map_kr_frame.add_child(map_kr)
-map_kr_frame.grid(row=0, column=1, padx=10, pady=10)
-
-map_yk_frame = folium.IFrame(width=400, height=400)
-map_yk_frame.add_child(map_yk)
-map_yk_frame.grid(row=1, column=0, padx=10, pady=10)
-
-map_uj_frame = folium.IFrame(width=400, height=400)
-map_uj_frame.add_child(map_uj)
-map_uj_frame.grid(row=1, column=1, padx=10, pady=10)
-
-map_su_frame = folium.IFrame(width=400, height=400)
-map_su_frame.add_child(map_su)
-map_su_frame.grid(row=2, column=0, padx=10, pady=10)
-
-frame_ws.pack()
-frame_kr.pack()
-frame_yk.pack()
-frame_uj.pack()
-frame_su.pack()
-
-'''
 window.mainloop()
