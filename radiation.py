@@ -39,10 +39,10 @@ global testnum
 testnum = 0
 
 # Set your OpenAI API key
-openai.api_key = "YOUR_KEY"
+openai.api_key = "key"
 API_KEY = 'key'
-CHAT_ID = 'id'
-BOT_ID = 'id'
+CHAT_ID = 'code'
+BOT_ID = 'code'
 def showMap(frame):
     global browser
     sys.excepthook = cef.ExceptHook
@@ -96,6 +96,34 @@ def pressed_5():
     folium.Marker([35.33796053363176,129.31350573077788], popup='새울').add_to(m)
     m.save('map.html')
     browser.Reload()
+
+def search():
+    selected_plant = combobox.get()  # Get the selected power plant
+    params = {'serviceKey': API_KEY, 'genName': selected_plant}
+    url = 'http://data.khnp.co.kr/environ/service/realtime/radiorate'
+    response = requests.get(url, params=params)
+    
+    #print(response.text)
+    root = ET.fromstring(response.text)
+    
+    data_list = []  # List to store data points
+
+    for item in root.iter("item"):
+        expl = item.findtext("expl")
+        name = item.findtext("name")
+        value = item.findtext("value")
+        data_list.append((name, expl, value))  # Append data points to the list
+    
+    query = search_entry.get().strip()  # Get the search query
+    search_result = ""  # Variable to store the search result
+
+    for item in data_list:
+        name, expl, value = item
+        if query.lower() in expl.lower():
+            search_result += "Power Site: {}\nPower Site expl: {}\nRadiation Level: {}usv/h\n\n".format(name,expl,value)
+
+    # Display the search result
+    search_result_label.config(text=search_result)
     
 def get_radiation_level():
     selected_plant = power_plant.get()  # Get the selected power plant
@@ -312,13 +340,13 @@ tab_radiobuttons = ttk.Frame(notebook)
 tab_graph = ttk.Frame(notebook)
 tab_maps = ttk.Frame(notebook)
 tab_safety = ttk.Frame(notebook)
-tab_telegram = ttk.Frame(notebook)
+tab_search = ttk.Frame(notebook)
 
 notebook.add(tab_radiobuttons, text="Radiation Level")
 notebook.add(tab_graph, text="Graph")
 notebook.add(tab_maps, text="Maps")
 notebook.add(tab_safety, text="Safety")
-notebook.add(tab_telegram, text="Others")
+notebook.add(tab_search, text="Search")
 
 notebook.pack()
 
@@ -424,5 +452,23 @@ input_box.place(x=128, y=400, height=88, width=348)
 # Create send button
 send_button = tk.Button(tab_safety, text="Send", command=send_message, height=5, width=12, font=font2)
 send_button.place(x=6, y=400, height=88, width=120)
+
+# Search
+
+values = ['WS','KR','YK','UJ','SU']
+combobox = tk.ttk.Combobox(tab_search,height=15,values=values,font=font2)
+combobox.pack(anchor="w")
+combobox.set('WS')
+
+search_entry = tk.Entry(tab_search, font=font2)
+search_entry.pack(anchor="w")
+
+
+search_button = tk.Button(tab_search, text="Search", command=search, font=font2)
+search_button.pack(anchor="w")
+
+search_result_label = tk.Label(tab_search, text="", font=font2)
+search_result_label.pack(anchor="w")
+
 
 window.mainloop()
